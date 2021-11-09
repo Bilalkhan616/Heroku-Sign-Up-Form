@@ -1,14 +1,25 @@
 // Note: Main App / SignUpScreen component...!
 
 import React from 'react';
-import SignUp from './components/signUp';
+import {
+  BrowserRouter,
+  Routes,
+  Route
 
-const SignUpScreen = () => {
+} from "react-router-dom"
+import SignUp from './components/sign-up';
+import CurrentUsers from './components/current-users';
+
+const App = () => {
   return (
-    <React.Fragment>
-      <SignUp />
-    </React.Fragment>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignUp />} />
+        <Route path="/current-users" element={<CurrentUsers />} />
+        {/* <Route path="*" element={< />} /> */}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-export default SignUpScreen;
+export default App;

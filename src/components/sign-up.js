@@ -7,13 +7,11 @@ import {
     Paper,
     FormControl,
     TextField,
-    InputAdornment,
     useTheme,
     makeStyles,
-    IconButton,
-    useMediaQuery
 } from '@material-ui/core'
-import { Email, Visibility, VisibilityOff } from '@material-ui/icons';
+import { Link } from 'react-router-dom'
+import axios from "axios";
 
 
 const useStyle = makeStyles((theme) => ({
@@ -77,6 +75,61 @@ const SignUp = () => {
     const onChange = (e) => {
         setFormState({ ...formState, [e.target.name]: e.target.value });
     };
+
+    const submitFunc = () => {
+        // 
+        if (name.length == "") {
+            alert("Please enter a valid name")
+            // <Alert severity="info">Please enter a valid name</Alert>
+        }
+
+        else if (email.length == "") {
+            alert("Please enter a valid email")
+        }
+
+        else if (password.length < 6) {
+            alert("Please enter a valid password")
+        }
+
+        else {
+            signUpUser(formState)
+            clearAll();
+        }
+    }
+
+
+    // function to clear input fields
+    const clearAll = () => {
+        setFormState({
+            name: '',
+            email: '',
+            password: ''
+        });
+    }
+
+    const signUpUser = async (data) => {
+
+        console.log("data recieved", data);
+        let api = 'http://localhost:3005/user/';
+        // let api = 'https://hello-world-deploy-bilal.herokuapp.com/user/'
+
+        try {
+            let response = await axios.post(api, data)
+            console.log(response);
+
+            if (response.status === 200) {
+                alert("User created successfully!!")
+            }
+
+            else {
+                console.log("Error")
+            }
+        }
+        catch (error) {
+
+        }
+
+    }
 
     return (
         <>
@@ -143,6 +196,7 @@ const SignUp = () => {
 
                             <Grid item container justify='center' style={{ marginTop: '2em' }}>
                                 <Button
+                                    onClick={submitFunc}
                                     fullWidth
                                     variant='contained'
                                     className={styles.Button}
@@ -151,6 +205,18 @@ const SignUp = () => {
                                 </Button>
                             </Grid>
                         </Grid>
+                    </Grid>
+                    <Grid item container justify='center' style={{ marginTop: '2em' }} >
+                        <Link to = '/current-users'>
+                            <Button
+                                style={{ width: '200px', background: 'white', color: 'black' }}
+                                // fullWidth
+                                variant='contained'
+                                className={styles.Button}
+                            >
+                                All Users
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </div>
