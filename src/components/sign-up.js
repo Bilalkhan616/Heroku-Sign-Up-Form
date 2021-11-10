@@ -68,8 +68,6 @@ const SignUp = () => {
         password: '',
     })
 
-    const [lockPassword, setLockPassword] = useState(false);
-
     const { name, email, password } = formState
 
     const onChange = (e) => {
@@ -182,7 +180,7 @@ const SignUp = () => {
                                     id="outlined-basic"
                                     label="Password"
                                     variant="outlined"
-                                    type={lockPassword ? 'text' : 'password'}
+                                    type={password}
                                     name="password"
                                     inputProps={{
                                         style: {
@@ -207,7 +205,7 @@ const SignUp = () => {
                         </Grid>
                     </Grid>
                     <Grid item container justify='center' style={{ marginTop: '2em' }} >
-                        <Link to = '/current-users'>
+                        <Link to='/current-users'>
                             <Button
                                 style={{ width: '200px', background: 'white', color: 'black' }}
                                 // fullWidth

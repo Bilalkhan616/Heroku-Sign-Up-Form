@@ -6,10 +6,13 @@ import {
     ListItem,
     ListItemText,
     Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    TextField
 } from '@mui/material';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FolderIcon from '@mui/icons-material/Folder';
 import { makeStyles } from '@material-ui/core';
 
 // Note: Handeling Material UI styling here...!
@@ -46,8 +49,53 @@ const useStyles = makeStyles((theme) => ({
 const CurrentUsers = () => {
 
     const styles = useStyles();
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
 
     const [currentUsers, setCurrentUsers] = useState([]);
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const updateFunc = () => {
+        // 
+        if (name.length == "") {
+            alert("Please enter a valid name")
+            // <Alert severity="info">Please enter a valid name</Alert>
+        }
+
+        else if (email.length == "") {
+            alert("Please enter a valid email")
+        }
+
+        else if (password.length < 6) {
+            alert("Please enter a valid password")
+        }
+
+        else {
+            // updateUser(formStates)
+
+        }
+    }
+
+
+    // // function to clear input fields
+    // const clearAll = () => {
+    //     setFormStates({
+    //         name: '',
+    //         email: '',
+    //         password: ''
+    //     });
+    // }
+
+    //Function to get user data in the list!
 
     const getUserList = async () => {
         let api = "http://localhost:3005/users/"
@@ -68,23 +116,41 @@ const CurrentUsers = () => {
         getUserList();
     }, [])
 
-    // useEffect(() => {
-    //     return () => {
-    //         setCurrentUsers([]);
-    //     }
-    // }, []);
 
-    const showUser = (data) => {
-        console.log(data);
-        // alert(`User name is ${data.name} and their email address is ${data.email}`)
+    // Function to delete user.! 
+    const deleteUser = async (data, key) => {
+        console.log(data, key);
+        let api = "http://localhost:3005/user/delete";
+        // let api = "https://crud-app-back-end.herokuapp.com/user/delete"; 
+        try {
+            let response = await axios.post(api, { email: data.email });
+            console.log(response);
+            if (response.status === 200) {
+                setCurrentUsers([...response.data]);
+            }
+        }
+        catch (error) { console.log(error.response); }
     }
 
-    const deleteUser = async (id) => {
-        let api = `http://localhost:3005/users/${id}`;
-        let response = await axios.delete(api)
-        console.log(response)
-    }
+    //Function to update user!
 
+    const updateUser = async (data) => {
+
+        //created user obj to update values
+
+
+        let api = 'http://localhost:3005/user/update';
+        try {
+            let response = await axios.post(api, {
+                email: data.email,
+                // updateUserObj: 
+            });
+            console.log(response);
+        }
+        catch (error) {
+
+        }
+    }
 
     return (
         <>
@@ -110,14 +176,58 @@ const CurrentUsers = () => {
                                                             <div>
                                                                 <Button
                                                                     style={{ backgroundColor: 'blue', color: 'white', marginLeft: '10px' }}
-                                                                // onClick={showUser()}
+                                                                    onClick={handleClickOpen}
                                                                 >
-                                                                    View
+                                                                    Edit
                                                                 </Button>
+
+                                                                <Dialog open={open} onClose={handleClose}>
+                                                                    <DialogTitle>Edit Form</DialogTitle>
+                                                                    <DialogContent>
+
+                                                                        <TextField
+                                                                            autoFocus
+                                                                            margin="dense"
+                                                                            id="name"
+                                                                            label="Name"
+                                                                            type="text"
+                                                                            fullWidth
+                                                                            variant="standard"
+                                                                            value={name}
+                                                                            onChange={(event) => setName(event.target.value)}
+                                                                        />
+                                                                        <TextField
+                                                                            autoFocus
+                                                                            margin="dense"
+                                                                            id="email"
+                                                                            label="Email Address"
+                                                                            type="email"
+                                                                            fullWidth
+                                                                            variant="standard"
+                                                                            value={email}
+                                                                            onChange={(event) => setEmail(event.target.value)}
+                                                                        />
+                                                                        <TextField
+                                                                            autoFocus
+                                                                            margin="dense"
+                                                                            id="password"
+                                                                            label="Password"
+                                                                            type="password"
+                                                                            fullWidth
+                                                                            variant="standard"
+                                                                            value={password}
+                                                                            onChange={(event) => setPassword(event.target.value)}
+                                                                        />
+                                                                    </DialogContent>
+                                                                    <DialogActions>
+                                                                        <Button onClick={handleClose}>Cancel</Button>
+                                                                        <Button onClick={updateUser}>Update</Button>
+                                                                    </DialogActions>
+                                                                </Dialog>
 
                                                                 <Button
                                                                     style={{ backgroundColor: 'red', color: 'white', marginLeft: '10px' }}
-                                                                    onClick={() => deleteUser(item.name)}
+                                                                    onClick={() => deleteUser(item, index)}
                                                                 >
                                                                     Delete
                                                                 </Button>
